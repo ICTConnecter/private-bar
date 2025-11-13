@@ -1,0 +1,88 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ユーザー情報の取得用ヘルパー
+    function getUserData(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
+    }
+
+    function isOwner() {
+      return request.auth != null && getUserData(request.auth.uid).role == 'owner';
+    }
+
+    function isApprovedUser() {
+      return request.auth != null &&
+             getUserData(request.auth.uid).status == 'approved';
+    }
+
+    function isOwnerOrSelf(uid) {
+      return request.auth != null &&
+             (isOwner() || request.auth.uid == uid);
+    }
+
+    // users コレクション
+    match /users/{uid} {
+      // 自分の情報は読み取り可能、オーナーは全て読み取り可能
+      allow read: if isOwnerOrSelf(uid);
+
+      // 新規登録は認証済みユーザーのみ
+      allow create: if request.auth != null && request.auth.uid == uid;
+
+      // 更新はオーナーのみ（ステータス変更など）
+      allow update: if isOwner();
+
+      // 削除は禁止
+      allow delete: if false;
+    }
+
+    // reservationSlots コレクション
+    match /reservationSlots/{slotId} {
+      // 承認済みユーザーは読み取り可能
+      allow read: if isApprovedUser() || isOwner();
+
+      // 作成・更新・削除はオーナーのみ
+      allow create, update, delete: if isOwner();
+    }
+
+    // reservations コレクション
+    match /reservations/{reservationId} {
+      // 自分の予約は読み取り可能、オーナーは全て読み取り可能
+      allow read: if isOwner() ||
+                     (isApprovedUser() && resource.data.userId == request.auth.uid);
+
+      // 作成は承認済みユーザーのみ
+      allow create: if isApprovedUser() &&
+                       request.resource.data.userId == request.auth.uid;
+
+      // 更新は予約者本人のみ
+      allow update: if isApprovedUser() &&
+                       resource.data.userId == request.auth.uid;
+
+      // 削除はオーナーのみ（緊急時）
+      allow delete: if isOwner();
+    }
+
+    // invitations コレクション
+    match /invitations/{invitationId} {
+      // 全員読み取り可能（招待コード検証のため）
+      allow read: if true;
+
+      // 作成はオーナーまたは承認済みユーザー
+      allow create: if isOwner() || isApprovedUser();
+
+      // 更新・削除はオーナーのみ
+      allow update, delete: if isOwner();
+    }
+
+    // notifications コレクション
+    match /notifications/{notificationId} {
+      // 自分宛の通知は読み取り可能
+      allow read: if request.auth != null &&
+                     resource.data.userId == request.auth.uid;
+
+      // 作成・更新・削除はサーバー側のみ（APIから実行）
+      allow create, update, delete: if false;
+    }
+  }
+}
