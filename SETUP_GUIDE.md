@@ -58,7 +58,7 @@ npm install
 1. Firebase Consoleで「プロジェクトの設定」→「全般」タブ
 2. 「アプリを追加」→「ウェブ」を選択
 3. アプリのニックネームを入力（例: `private-bar-web`）
-4. 「Firebase Hostingを設定」はチェックを入れる
+4. 「Firebase Hostingを設定」のチェックは**外す**（Vercelを使用するため）
 5. 表示される設定情報をメモ：
    - `apiKey`
    - `authDomain`
@@ -310,7 +310,7 @@ firebase init
 
 # 選択項目:
 # - Firestore: Rules and indexes
-# - Hosting: Configure files for Firebase Hosting
+# ※ Hostingは選択しない（Vercelを使用）
 #
 # 既存のFirebaseプロジェクトを選択
 # firestore.rules, firestore.indexes.jsonを既存のものを使用
@@ -356,49 +356,67 @@ npm run dev
 
 ---
 
-## 🏗️ 7. 本番環境へのデプロイ
+## 🏗️ 7. 本番環境へのデプロイ（Vercel）
 
-### 7.1 Next.jsのビルド
-
-```bash
-npm run build
-```
-
-### 7.2 Firebase Hostingへデプロイ
+### 7.1 Vercel CLIでデプロイ
 
 ```bash
-# Hostingの設定（初回のみ）
-firebase init hosting
+# Vercel CLIをグローバルインストール（任意）
+npm install -g vercel
 
-# ビルドディレクトリ: out
-# シングルページアプリ: Yes
-# GitHubとの連携: No（任意）
+# Vercelにログイン
+vercel login
 
 # デプロイ
-npm run build
-firebase deploy --only hosting
+vercel
 ```
 
-### 7.3 LIFFエンドポイントURLの更新
+### 7.2 Vercel Dashboard からデプロイ（推奨）
 
-1. デプロイ完了後に表示されるHosting URLをコピー
-   - 例: `https://your-project-id.web.app`
+1. [Vercel](https://vercel.com/) にログイン
+2. 「New Project」をクリック
+3. GitHubリポジトリをインポート
+4. 「Deploy」をクリック
+
+### 7.3 環境変数の設定
+
+Vercel Dashboard で環境変数を設定:
+
+1. プロジェクトを選択
+2. 「Settings」→「Environment Variables」
+3. 以下の環境変数を追加:
+
+| 変数名 | 説明 |
+|--------|------|
+| `NEXT_PUBLIC_LIFF_ID` | LIFF ID |
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | Firebase API Key |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Firebase Auth Domain |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Firebase Project ID |
+| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Firebase Storage Bucket |
+| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Firebase Messaging Sender ID |
+| `NEXT_PUBLIC_FIREBASE_APP_ID` | Firebase App ID |
+| `FIREBASE_ADMIN_CLIENT_EMAIL` | Firebase Admin Client Email |
+| `FIREBASE_ADMIN_PRIVATE_KEY` | Firebase Admin Private Key |
+| `LINE_CHANNEL_ACCESS_TOKEN` | LINE Channel Access Token |
+| `LINE_CHANNEL_SECRET` | LINE Channel Secret |
+| `OWNER_LINE_UID` | オーナーのLINE UID |
+
+**注意**: `FIREBASE_ADMIN_PRIVATE_KEY` は改行を含むため、Vercelでは自動的に処理されます。
+
+### 7.4 LIFFエンドポイントURLの更新
+
+1. デプロイ完了後に表示されるVercel URLをコピー
+   - 例: `https://your-project.vercel.app`
 2. LINE Developers ConsoleでLIFFアプリの設定を開く
 3. エンドポイントURLを本番URLに変更
 4. 保存
 
-### 7.4 環境変数の本番設定
+### 7.5 カスタムドメインの設定（任意）
 
-本番環境用の環境変数を設定する方法：
-
-**Firebase Hostingの場合:**
-- Firebase Consoleで環境変数を設定
-- または、Next.js環境変数をビルド時に含める
-
-**Vercelの場合:**
-1. Vercelにプロジェクトをインポート
-2. Settings → Environment Variablesで環境変数を設定
-3. Deploy
+1. Vercel Dashboard → プロジェクト → 「Settings」→「Domains」
+2. カスタムドメインを追加
+3. DNSレコードを設定
+4. LINE DevelopersでLIFFエンドポイントURLをカスタムドメインに更新
 
 ---
 
@@ -517,6 +535,6 @@ firebase deploy --only firestore:rules
 
 ---
 
-**最終更新日**: 2025-11-12
+**最終更新日**: 2025-12-14
 
 セットアップが完了したら、まず開発環境で動作確認を行ってから本番環境にデプロイしてください。

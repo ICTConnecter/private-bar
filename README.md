@@ -10,7 +10,7 @@
 - **プラットフォーム**: LINE Front-end Framework (LIFF)
 - **認証**: LINE Login
 - **データベース**: Cloud Firestore
-- **ホスティング**: Firebase Hosting
+- **ホスティング**: Vercel
 - **通知**: LINE Messaging API
 
 ---
@@ -63,7 +63,7 @@
        │
        ▼
 ┌─────────────────────┐
-│  Firebase Hosting   │
+│      Vercel         │
 └──────┬──────────────┘
        │
        ├──────────────┐
@@ -873,7 +873,7 @@ OWNER_LINE_UID=your-owner-line-uid
 
 ---
 
-### 2. Firebase初期設定
+### 2. Firebase初期設定（Firestoreのみ）
 
 ```bash
 # Firebase CLIインストール
@@ -886,9 +886,9 @@ firebase login
 firebase init
 
 # 選択項目:
-# - Firestore
-# - Hosting
+# - Firestore（Rules and indexes）
 # - Functions（Cloud Functionsを使う場合）
+# ※ Hostingは選択しない（Vercelを使用）
 ```
 
 ---
@@ -942,18 +942,37 @@ firebase deploy --only firestore:indexes
 
 ---
 
-### 4. Next.jsビルド＆デプロイ
+### 4. Vercelへデプロイ
 
 ```bash
-# 依存関係インストール
-npm install
+# Vercel CLIインストール（任意）
+npm install -g vercel
 
-# ビルド
-npm run build
-
-# Firebase Hostingにデプロイ
-firebase deploy --only hosting
+# Vercelにデプロイ
+vercel
 ```
+
+**または、Vercel Dashboard からデプロイ:**
+
+1. [Vercel](https://vercel.com/) にログイン
+2. 「New Project」をクリック
+3. GitHubリポジトリをインポート
+4. 環境変数を設定（Settings → Environment Variables）
+5. 「Deploy」をクリック
+
+**環境変数の設定（Vercel Dashboard）:**
+- `NEXT_PUBLIC_LIFF_ID`
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+- `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+- `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+- `NEXT_PUBLIC_FIREBASE_APP_ID`
+- `FIREBASE_ADMIN_CLIENT_EMAIL`
+- `FIREBASE_ADMIN_PRIVATE_KEY`
+- `LINE_CHANNEL_ACCESS_TOKEN`
+- `LINE_CHANNEL_SECRET`
+- `OWNER_LINE_UID`
 
 ---
 
@@ -961,9 +980,9 @@ firebase deploy --only hosting
 
 LINE Developers Consoleで:
 1. LIFFアプリを作成
-2. エンドポイントURLにFirebase HostingのURLを設定
+2. エンドポイントURLにVercelのURLを設定（例: `https://your-project.vercel.app`）
 3. スコープ設定: `profile`, `openid`
-4. LIFF IDを `.env.local` に設定
+4. LIFF IDを環境変数に設定
 
 ---
 
@@ -988,35 +1007,35 @@ LINE Developers Consoleで:
 
 ## 📝 開発ロードマップ
 
-### マイルストーン1: 基本機能実装（Week 1-2）
-- [ ] Next.jsプロジェクトセットアップ
-- [ ] Firebase設定
-- [ ] LIFF認証実装
-- [ ] ユーザー登録・ログイン機能
-- [ ] 基本的なルーティング
+### マイルストーン1: 基本機能実装 ✅
+- [x] Next.jsプロジェクトセットアップ
+- [x] Firebase設定
+- [x] LIFF認証実装
+- [x] ユーザー登録・ログイン機能
+- [x] 基本的なルーティング
 
-### マイルストーン2: 予約機能実装（Week 3-4）
-- [ ] 予約作成機能
-- [ ] 予約一覧表示
-- [ ] 予約変更・キャンセル機能
-- [ ] カレンダーUIコンポーネント
+### マイルストーン2: 予約機能実装 ✅
+- [x] 予約作成機能
+- [x] 予約一覧表示
+- [x] 予約変更・キャンセル機能
+- [x] カレンダーUIコンポーネント
 
-### マイルストーン3: オーナー機能実装（Week 5-6）
-- [ ] オーナーダッシュボード
-- [ ] 予約枠設定機能
-- [ ] ユーザー管理機能
-- [ ] 招待機能
+### マイルストーン3: オーナー機能実装 ✅
+- [x] オーナーダッシュボード
+- [x] 予約枠設定機能
+- [x] ユーザー管理機能
+- [x] 招待機能
 
-### マイルストーン4: 通知機能実装（Week 7）
-- [ ] LINE Messaging API統合
-- [ ] 予約完了通知
-- [ ] リマインダー機能（Cloud Scheduler設定）
+### マイルストーン4: 通知機能実装 ✅
+- [x] LINE Messaging API統合
+- [x] 予約完了通知
+- [ ] リマインダー機能（Cloud Scheduler設定）※将来対応
 
-### マイルストーン5: テスト＆デプロイ（Week 8）
+### マイルストーン5: テスト＆デプロイ
 - [ ] 単体テスト作成
 - [ ] E2Eテスト
-- [ ] 本番環境デプロイ
-- [ ] ドキュメント整備
+- [x] 本番環境デプロイ手順整備
+- [x] ドキュメント整備
 
 ---
 
@@ -1054,5 +1073,5 @@ LINE Developers Consoleで:
 
 ---
 
-**最終更新日**: 2025-11-09
+**最終更新日**: 2025-12-14
 **バージョン**: 1.0.0

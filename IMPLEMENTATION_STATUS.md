@@ -90,69 +90,9 @@
 
 ---
 
-## 🔧 セットアップ手順
+## 🔧 セットアップ
 
-### 1. 環境変数の設定
-
-`.env`ファイルに以下の値を設定してください：
-
-```bash
-# Firebase Admin認証情報（必須）
-FIREBASE_ADMIN_CLIENT_EMAIL=your-client-email@project-id.iam.gserviceaccount.com
-FIREBASE_ADMIN_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYOUR_PRIVATE_KEY_HERE\n-----END PRIVATE KEY-----\n"
-
-# LINE Messaging API（必須）
-LINE_CHANNEL_ACCESS_TOKEN=your-channel-access-token
-LINE_CHANNEL_SECRET=your-channel-secret
-
-# オーナーLINE UID（必須）
-OWNER_LINE_UID=your-owner-line-uid
-```
-
-#### Firebase Admin認証情報の取得方法
-
-1. [Firebase Console](https://console.firebase.google.com/)にアクセス
-2. プロジェクトを選択
-3. 「プロジェクトの設定」→「サービスアカウント」
-4. 「新しい秘密鍵の生成」をクリック
-5. ダウンロードしたJSONファイルから以下を取得：
-   - `client_email` → `FIREBASE_ADMIN_CLIENT_EMAIL`
-   - `private_key` → `FIREBASE_ADMIN_PRIVATE_KEY`
-
-#### LINE Messaging API設定方法
-
-1. [LINE Developers Console](https://developers.line.biz/console/)にアクセス
-2. プロバイダーを選択またはチャネルを作成
-3. Messaging APIチャネルを作成
-4. 「Messaging API設定」から以下を取得：
-   - チャネルアクセストークン → `LINE_CHANNEL_ACCESS_TOKEN`
-   - チャネルシークレット → `LINE_CHANNEL_SECRET`
-
-#### オーナーLINE UIDの取得方法
-
-1. LIFFアプリを起動
-2. ログイン時に表示されるLINE IDをコピー
-3. `.env`ファイルの`OWNER_LINE_UID`に設定
-
-### 2. Firestoreインデックスの作成
-
-```bash
-firebase deploy --only firestore:indexes
-```
-
-### 3. Firestore Security Rulesのデプロイ
-
-`firestore.rules`ファイルを作成し、README.mdに記載されているセキュリティルールをコピーしてデプロイ：
-
-```bash
-firebase deploy --only firestore:rules
-```
-
-### 4. 開発サーバーの起動
-
-```bash
-npm run dev
-```
+詳細なセットアップ手順は [SETUP_GUIDE.md](./SETUP_GUIDE.md) を参照してください。
 
 ---
 
@@ -283,31 +223,7 @@ showToast('エラーが発生しました', 'error');
 
 ## 🐛 トラブルシューティング
 
-### Firebase Admin認証エラー
-
-```
-Error: Firebase Admin credentials are not set
-```
-
-**解決方法**: `.env`ファイルに`FIREBASE_ADMIN_CLIENT_EMAIL`と`FIREBASE_ADMIN_PRIVATE_KEY`が正しく設定されているか確認してください。
-
-### LINE通知が送信されない
-
-**原因**: `LINE_CHANNEL_ACCESS_TOKEN`が未設定または無効
-
-**解決方法**:
-1. LINE Developers Consoleで正しいチャネルアクセストークンを取得
-2. `.env`ファイルに設定
-3. サーバーを再起動
-
-### Firestoreの権限エラー
-
-**原因**: Security Rulesが未デプロイまたは不適切
-
-**解決方法**:
-```bash
-firebase deploy --only firestore:rules
-```
+詳細なトラブルシューティングは [SETUP_GUIDE.md](./SETUP_GUIDE.md#-9-トラブルシューティング) を参照してください。
 
 ---
 
@@ -321,7 +237,7 @@ firebase deploy --only firestore:rules
 
 ---
 
-**最終更新日**: 2025-11-12
+**最終更新日**: 2025-12-14
 
 ---
 
