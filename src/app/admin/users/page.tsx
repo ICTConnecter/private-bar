@@ -231,10 +231,14 @@ export default function AdminUsersPage() {
                             <p className="text-sm text-gray-600">
                               招待日: {new Date(user.invitedAt?.seconds ? user.invitedAt.seconds * 1000 : user.invitedAt).toLocaleDateString('ja-JP')}
                             </p>
-                            {user.invitedBy && (
+                            {user.invitedBy ? (
                               <p className="text-xs text-gray-500">
                                 招待者: {user.invitedBy}
                               </p>
+                            ) : (
+                              <span className="inline-block text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded">
+                                直接リクエスト
+                              </span>
                             )}
                           </div>
                         </div>

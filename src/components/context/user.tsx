@@ -55,7 +55,7 @@ export const UserAuthComponent = ({ children }: Props) => {
             setIsError(true);
           }
         } else {
-          window.location.href = '/register'
+          window.location.href = '/register-request'
         }
       });
   };
